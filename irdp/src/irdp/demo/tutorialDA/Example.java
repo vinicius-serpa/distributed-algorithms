@@ -32,9 +32,9 @@
 
 package irdp.demo.tutorialDA;
 
-import irdp.protocols.tutorialDA.print.BoundedPrintLayer;
-import irdp.protocols.tutorialDA.print.PrintApplicationLayer;
-import irdp.protocols.tutorialDA.print.PrintLayer;
+import irdp.protocols.tutorialDA.print.layer.BoundedPrintLayer;
+import irdp.protocols.tutorialDA.print.layer.PrintApplicationLayer;
+import irdp.protocols.tutorialDA.print.layer.PrintLayer;
 import net.sf.appia.core.Appia;
 import net.sf.appia.core.AppiaDuplicatedSessionsException;
 import net.sf.appia.core.AppiaInvalidQoSException;

@@ -30,23 +30,30 @@
  * 
  */
 
-package irdp.protocols.tutorialDA.print;
+package irdp.protocols.tutorialDA.print.layer;
 
+import irdp.protocols.tutorialDA.print.event.PrintAlarmEvent;
+import irdp.protocols.tutorialDA.print.event.PrintConfirmEvent;
+import irdp.protocols.tutorialDA.print.event.PrintRequestEvent;
+import irdp.protocols.tutorialDA.print.event.PrintStatusEvent;
+import irdp.protocols.tutorialDA.print.session.PrintApplicationSession;
 import net.sf.appia.core.Layer;
 import net.sf.appia.core.Session;
 import net.sf.appia.core.events.channel.ChannelInit;
 
 
 /**
- * Layer of the Print protocol.
+ * Layer of the Print Application.
+ * 
  * @author alexp
  */
-public class PrintLayer extends Layer {
+public class PrintApplicationLayer extends Layer {
 
-  public PrintLayer() {
+  /** Creates a new instance of PrintApplicationLayer */
+  public PrintApplicationLayer() {
     /* events that the protocol will create */
     evProvide = new Class[1];
-    evProvide[0] = PrintConfirmEvent.class;
+    evProvide[0] = PrintRequestEvent.class;
 
     /*
      * events that the protocol requires to work This is a subset of the
@@ -55,12 +62,14 @@ public class PrintLayer extends Layer {
     evRequire = new Class[0];
 
     /* events that the protocol will accept */
-    evAccept = new Class[2];
-    evAccept[0] = PrintRequestEvent.class;
-    evAccept[1] = ChannelInit.class;
+    evAccept = new Class[4];
+    evAccept[0] = PrintConfirmEvent.class;
+    evAccept[1] = PrintStatusEvent.class;
+    evAccept[2] = PrintAlarmEvent.class;
+    evAccept[3] = ChannelInit.class;
   }
 
   public Session createSession() {
-    return new PrintSession(this);
+    return new PrintApplicationSession(this);
   }
 }

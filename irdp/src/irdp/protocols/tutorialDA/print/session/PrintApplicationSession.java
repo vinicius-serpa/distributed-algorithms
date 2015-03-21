@@ -30,10 +30,15 @@
  * 
  */
 
-package irdp.protocols.tutorialDA.print;
+package irdp.protocols.tutorialDA.print.session;
 
 import net.sf.appia.core.*;
 import net.sf.appia.core.events.channel.ChannelInit;
+import irdp.protocols.tutorialDA.print.event.PrintAlarmEvent;
+import irdp.protocols.tutorialDA.print.event.PrintConfirmEvent;
+import irdp.protocols.tutorialDA.print.event.PrintRequestEvent;
+import irdp.protocols.tutorialDA.print.event.PrintStatusEvent;
+import irdp.protocols.tutorialDA.print.vo.Status;
 
 import java.io.BufferedReader;
 import java.io.IOException;

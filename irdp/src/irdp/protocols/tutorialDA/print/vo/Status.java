@@ -30,24 +30,24 @@
  * 
  */
 
-package irdp.protocols.tutorialDA.print;
-
-import net.sf.appia.core.Event;
-
+package irdp.protocols.tutorialDA.print.vo;
 
 /**
- * Print request confirmation event.
+ * Print status.
  * 
  * @author alexp
  */
-public class PrintConfirmEvent extends Event {
-  int rqid;
+public class Status {
+  public static final Status OK = new Status(true);
+  public static final Status NOK = new Status(false);
 
-  void setId(int rid) {
-    rqid = rid;
+  private boolean value;
+
+  private Status(boolean val) {
+    value = val;
   }
 
-  int getId() {
-    return rqid;
+  public boolean equals(Object obj) {
+    return (obj instanceof Status) && (value == ((Status) obj).value);
   }
 }

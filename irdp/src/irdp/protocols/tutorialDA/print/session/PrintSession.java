@@ -30,8 +30,10 @@
  * 
  */
 
-package irdp.protocols.tutorialDA.print;
+package irdp.protocols.tutorialDA.print.session;
 
+import irdp.protocols.tutorialDA.print.event.PrintConfirmEvent;
+import irdp.protocols.tutorialDA.print.event.PrintRequestEvent;
 import net.sf.appia.core.AppiaEventException;
 import net.sf.appia.core.Direction;
 import net.sf.appia.core.Event;

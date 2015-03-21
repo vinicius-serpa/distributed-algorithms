@@ -30,40 +30,33 @@
  * 
  */
 
-package irdp.protocols.tutorialDA.print;
+package irdp.protocols.tutorialDA.print.event;
 
-import net.sf.appia.core.Layer;
-import net.sf.appia.core.Session;
-import net.sf.appia.core.events.channel.ChannelInit;
+import net.sf.appia.core.Event;
+
 
 /**
- * Layer of the Bounded Print protocol.
+ * Print request event.
  * 
  * @author alexp
  */
-public class BoundedPrintLayer extends Layer {
+public class PrintRequestEvent extends Event {
+  int rqid;
+  String str;
 
-  public BoundedPrintLayer() {
-    /* events that the protocol will create */
-    evProvide = new Class[2];
-    evProvide[0] = PrintStatusEvent.class;
-    evProvide[1] = PrintAlarmEvent.class;
-
-    /*
-     * events that the protocol requires to work. This is a subset of the
-     * accepted events.
-     */
-    evRequire = new Class[1];
-    evRequire[0] = PrintConfirmEvent.class;
-
-    /* events that the protocol will accept */
-    evAccept = new Class[3];
-    evAccept[0] = PrintRequestEvent.class;
-    evAccept[1] = PrintConfirmEvent.class;
-    evAccept[2] = ChannelInit.class;
+  public void setId(int rid) {
+    rqid = rid;
   }
 
-  public Session createSession() {
-    return new BoundedPrintSession(this);
+  public void setString(String s) {
+    str = s;
+  }
+
+  public int getId() {
+    return rqid;
+  }
+
+  public String getString() {
+    return str;
   }
 }
