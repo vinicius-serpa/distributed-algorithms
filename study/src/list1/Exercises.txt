@@ -1,0 +1,54 @@
+1) Sistema de identificação
+
+	Estrutura de dados: array multidimensional de inteiros: array[][][]
+	posição 1: uid do processo
+	posição 2: uid da mensagem
+	posição 3: uid do campo da mensagem
+	
+	Lógica:
+	
+	A camada de aplicação inicializa o array e o transfere através de uma mensagem para outras camadas.
+	Cada processo de cada camada é responsável por extrair o maior valor do array, considerando a primeira posição.
+	Então o processo soma 1 ao valor extraído, seta como seu UID e o devolve para a primeira posição do array.
+	A mesma lógica é aplicada para a mensagem, porém considera-se o uid do processo que a envolve.
+	Idem para os campos das mensagens.
+	
+	Formato do UID:
+	pos1: define o processo. Exemplo: 1.
+	pos1-pos2: define a mensagem. Exemplo: 1-1.
+	pos1-pos2-pos3: define o campo da mensagem. Exemplo: 1-1-1.
+
+2) Notações para descrição de módulo e implementação:
+
+	Module:
+		Name: IntHandler, instance ih.
+		
+		Events:
+			Request: <ih, Insert | int>: Receive an integer value and save.
+			Indication: <ih, Alert | string>: Alert when the sum of integers excedeed a hundred, for each hundred.
+		
+		Properties:
+			IH1: A zero or negative value is not processed.
+		
+	Implements:
+		IntHandler, instance ih
+		
+		upon <ih, Init> do
+			h_excedeed := "";
+			sum := 0;
+			qtd_eh := 0;
+		
+		upon event <ih, Insert | int> such
+		that int > 0 do
+			sum := sum + int;
+			qtd_eh := trunc(int / 100);
+			while (qtd_eh > 0) do // for statement invert the sequence of display hundreds	
+				h_excedeed := string(qtd_eh) + "00";
+				trigger<ih, Alert | h_excedeed>;
+				qtd_eh--;
+		
+3) Implementação no Appia
+
+	Executar Run.java presente no pacote list1
+
+	
