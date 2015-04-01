@@ -50,5 +50,30 @@
 3) Implementação no Appia
 
 	Executar Run.java presente no pacote list1
+	
+4) 
+
+The processing of the  Recovery  event should, for
+instance, retrieve the relevant state of the process from stable storage before the
+processing of other events is resumed.
+
+O modelo falha e recuperação continua existindo, pois é necessário que o processo possa recuperar seu estado relevante
+a partir de um armazenamento de dados confiável antes que o processo possa continuar executando. Não basta recuperar seu
+estado atual, pressupõe-se que o processo precise refazer alguma tarefa já feita anteriormente para poder continuar executando.
+
+Cenário 1: Memristor possui uma capacidade limitada para os processos em execução
+Comportamento 1: O memristor tem o mesmo comportamento da DRAM para orquestrar os programas em execução
+Cenário 2: Os limites do Memristor não são atingidos pelo número dos programas em execução
+Comportamento 2: O memristor possui o mesmo comportamento da HD para orquestrar os programas em execução
+
+A) A memristor recupera o estado automaticamente e o modelo falha-recupera deixa de fazer sentido.
+B) Existe um estado "relevante" que precisa ser armazenado de qualquer forma - a aplicação não pode continuar de onde parou, deve refazer alguma coisa.
+
+5) 
+
+FF1: Se um processo correto p deixa de entregar infinitas mensagens a um processo q, então o processo m enviará infinitas vezes a mensagem até que seja recebida pelo processo q.
+Felipe: Se um processo correto p envia infinitas mensagens a um processo q, podendo haver um determinado número de perdas, então o processo q entregará um número infinito de vezes exceto o número de mensagens perdidas
+
+
 
 	
