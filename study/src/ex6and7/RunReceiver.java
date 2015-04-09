@@ -1,12 +1,12 @@
-package ex6;
+package ex6and7;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
-import ex6.layer.SendLayer;
-import ex6.session.SendSession;
+import ex6and7.layer.ReceiveLayer;
+import ex6and7.session.ReceiveSession;
 import net.sf.appia.core.Appia;
 import net.sf.appia.core.AppiaCursorException;
 import net.sf.appia.core.AppiaDuplicatedSessionsException;
@@ -17,7 +17,8 @@ import net.sf.appia.core.Layer;
 import net.sf.appia.core.QoS;
 import net.sf.appia.protocols.udpsimple.UdpSimpleLayer;
 
-public class RunSender {
+
+public class RunReceiver {
 
 	private static String ADDR_SENDER = "localhost";
 	private static String ADDR_RECEIVER = "localhost";
@@ -25,9 +26,10 @@ public class RunSender {
 	private static int PORT_RECEIVER = 9090;
 
 	public static void main(String[] args) {
+		/* Creates a new PBLayer and initializes it */
 
 		/* Create layers and put them on a array */
-		Layer[] qos = { new UdpSimpleLayer(), new SendLayer() };
+		Layer[] qos = { new UdpSimpleLayer(), new ReceiveLayer() };
 
 		/* Create a QoS */
 		QoS myQoS = null;
@@ -38,10 +40,10 @@ public class RunSender {
 			System.err.println(ex.getMessage());
 			System.exit(1);
 		}
-
+		/* Create a channel. Uses default event scheduler. */
 		Channel channel = myQoS.createUnboundChannel("UDP Simple Channel");
 
-		SendSession sas = (SendSession) qos[qos.length - 1]
+		ReceiveSession sas = (ReceiveSession) qos[qos.length - 1]
 				.createSession();
 		sas.init(buildProcessSet());
 		ChannelCursor cc = channel.getCursor();
@@ -70,16 +72,17 @@ public class RunSender {
 	private static SocketAddress[] buildProcessSet() {
 		SocketAddress[] addresses = new SocketAddress[2];
 
-		InetAddress addr = null;
-		InetAddress addr2 = null;
+		InetAddress addrSender = null;
+		InetAddress addrReceiver = null;
 		try {
-			addr = InetAddress.getByName(ADDR_SENDER);
-			addr2 = InetAddress.getByName(ADDR_RECEIVER);
+			addrSender = InetAddress.getByName(ADDR_SENDER);
+			addrReceiver = InetAddress.getByName(ADDR_RECEIVER);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		addresses[0] = new InetSocketAddress(addr, PORT_SENDER);
-		addresses[1] = new InetSocketAddress(addr2, PORT_RECEIVER);
+
+		addresses[0] = new InetSocketAddress(addrSender, PORT_SENDER);
+		addresses[1] = new InetSocketAddress(addrReceiver, PORT_RECEIVER);
 
 		return addresses;
 	}

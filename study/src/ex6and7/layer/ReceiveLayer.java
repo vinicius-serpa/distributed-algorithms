@@ -1,8 +1,8 @@
-package ex6.layer;
+package ex6and7.layer;
 
-import ex6.event.ReceiverConfirmEvent;
-import ex6.event.SenderRequestEvent;
-import ex6.session.ReceiveSession;
+import ex6and7.event.ReceiverConfirmEvent;
+import ex6and7.event.SenderRequestEvent;
+import ex6and7.session.ReceiveSession;
 import net.sf.appia.core.Layer;
 import net.sf.appia.core.Session;
 import net.sf.appia.core.events.channel.ChannelInit;

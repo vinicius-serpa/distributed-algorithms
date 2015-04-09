@@ -1,11 +1,11 @@
-package ex6.session;
+package ex6and7.session;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-import ex6.event.ReceiverConfirmEvent;
-import ex6.event.SenderRequestEvent;
-import ex6.to.MyMessage;
+import ex6and7.event.ReceiverConfirmEvent;
+import ex6and7.event.SenderRequestEvent;
+import ex6and7.to.MyMessage;
 import net.sf.appia.core.AppiaEventException;
 import net.sf.appia.core.Direction;
 import net.sf.appia.core.Event;
@@ -56,25 +56,36 @@ public class ReceiveSession extends Session {
 	}
 
 	private void handleSenderRequest(SenderRequestEvent conf) {
-		MyMessage s = (MyMessage) conf.getMessage().popObject();
-		String receivedMessage = s.getString();
-		System.out.println("[Receiver: received message: " + receivedMessage
-				+ "]");
-		ReceiverConfirmEvent confirmationEvent = new ReceiverConfirmEvent();
-		confirmationEvent.setChannel(conf.getChannel());
-		confirmationEvent.setId(conf.getId());
-		Message m = new Message();
-		m.pushObject(s);
-		confirmationEvent.setMessage(m);
-		confirmationEvent.setDir(Direction.DOWN);
-		confirmationEvent.setSourceSession(this);
-		confirmationEvent.setSendSource(addresses[1]);
-		confirmationEvent.setDest(addresses[0]);
+		
 		try {
-			confirmationEvent.init();
-			confirmationEvent.go();
-		} catch (AppiaEventException e) {
-			e.printStackTrace();
+			new Thread().sleep(3500); // 4 sec
+		} catch (InterruptedException e1) {			
+			e1.printStackTrace();
+		}
+		
+		try {
+			MyMessage s = (MyMessage) conf.getMessage().popObject();
+			String receivedMessage = s.getString();
+			System.out.println("[Receiver: received message: " + receivedMessage + "]");
+			
+			ReceiverConfirmEvent confirmationEvent = new ReceiverConfirmEvent();
+			confirmationEvent.setChannel(conf.getChannel());
+			confirmationEvent.setId(conf.getId());
+			Message m = new Message();
+			m.pushObject(s);
+			confirmationEvent.setMessage(m);
+			confirmationEvent.setDir(Direction.DOWN);
+			confirmationEvent.setSourceSession(this);
+			confirmationEvent.setSendSource(addresses[1]);
+			confirmationEvent.setDest(addresses[0]);
+			try {
+				confirmationEvent.init();
+				confirmationEvent.go();
+			} catch (AppiaEventException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			System.out.println("Discarting confirmed message");
 		}
 	}
 

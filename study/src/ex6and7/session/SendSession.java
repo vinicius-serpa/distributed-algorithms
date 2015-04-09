@@ -1,13 +1,13 @@
-package ex6.session;
+package ex6and7.session;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.SocketAddress;
 import java.net.InetSocketAddress;
 
-import ex6.event.ReceiverConfirmEvent;
-import ex6.event.SenderRequestEvent;
-import ex6.to.MyMessage;
+import ex6and7.event.ReceiverConfirmEvent;
+import ex6and7.event.SenderRequestEvent;
+import ex6and7.to.MyMessage;
 import net.sf.appia.core.AppiaEventException;
 import net.sf.appia.core.Channel;
 import net.sf.appia.core.Direction;
@@ -19,6 +19,10 @@ import net.sf.appia.core.message.Message;
 import net.sf.appia.protocols.common.RegisterSocketEvent;
 
 public class SendSession extends Session {
+	
+	private MessageReader reader = null;
+	private SocketAddress[] addresses;
+	private boolean notConfirm = true;
 	
 	public SendSession(Layer layer) {
 		super(layer);
@@ -32,10 +36,7 @@ public class SendSession extends Session {
 			handleChannelInit((ChannelInit) event);
 		else if (event instanceof ReceiverConfirmEvent)
 			handleReceiverConfirm((ReceiverConfirmEvent) event);
-	}
-
-	private MessageReader reader = null;
-	private SocketAddress[] addresses;
+	}	
 
 	private void handleChannelInit(ChannelInit init) {
 		try {
@@ -65,6 +66,9 @@ public class SendSession extends Session {
 	private void handleReceiverConfirm(ReceiverConfirmEvent conf) {
 		System.out.println("[Sender: received confirmation of request "
 						+ ((MyMessage)conf.getMessage().popObject()).getId() + "]");
+		
+		notConfirm = false;
+		
 		try {
 			conf.go();
 		} catch (AppiaEventException ex) {
@@ -88,13 +92,15 @@ public class SendSession extends Session {
 		}
 
 		public void run() {
-			boolean running = true;
+			boolean running = true;			
 
 			while (running) {
 				rid++;
 				System.out.println();
 				System.out.print("[Sender](" + rid + ")> ");
 				try {
+					
+					notConfirm = true;
 					String s = stdin.readLine();
 					
 					SenderRequestEvent request = new SenderRequestEvent();
@@ -105,9 +111,15 @@ public class SendSession extends Session {
 					request.setMessage(m);
 					request.setDest(addresses[1]);
 					request.setSendSource(addresses[0]);
-					System.out.println("sending... " );
-					request.asyncGo(channel, Direction.DOWN);
 					
+					while (notConfirm) {
+																							
+						System.out.println("sending... " );
+						request.asyncGo(channel, Direction.DOWN);
+						
+						Thread.sleep(1500);
+					}
+										
 				} catch (AppiaEventException ex) {
 					ex.printStackTrace();
 				} catch (Exception e) {
@@ -115,7 +127,7 @@ public class SendSession extends Session {
 				}
 
 				try {
-					Thread.sleep(1500);
+					Thread.sleep(1000);	// 1 sec
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

@@ -1,11 +1,11 @@
-package ex6.event;
+package ex6and7.event;
 
 import java.net.SocketAddress;
 
 import net.sf.appia.core.events.SendableEvent;
 
-public class ReceiverConfirmEvent extends SendableEvent {
-
+public class SenderRequestEvent extends SendableEvent {
+	
 	static int rqid;
 
 	public void setId(int rid) {

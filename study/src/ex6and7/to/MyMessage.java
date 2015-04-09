@@ -1,4 +1,4 @@
-package ex6.to;
+package ex6and7.to;
 
 import java.io.Serializable;
 
