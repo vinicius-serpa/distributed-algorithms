@@ -57,6 +57,7 @@ import irdp.protocols.tutorialDA.sampleAppl.SampleApplLayer;
 import irdp.protocols.tutorialDA.sampleAppl.SampleApplSession;
 import irdp.protocols.tutorialDA.tcpBasedPFD.TcpBasedPFDLayer;
 import irdp.protocols.tutorialDA.tcpBasedPFD.TcpBasedPFDSession;
+import irdp.protocols.tutorialDA.tcpBasedPerfectP2P.TcpBasedPerfectP2PLayer;
 import irdp.protocols.tutorialDA.trbViewSync.TRBViewSyncLayer;
 import irdp.protocols.tutorialDA.uniformFloodingConsensus.UniformFloodingConsensusLayer;
 import irdp.protocols.tutorialDA.uniformHierarchicalConsensus.UniformHierarchicalConsensusLayer;
@@ -146,6 +147,8 @@ public class SampleAppl {
 			return getBebChannel(set);
 		else if (qos.equals("rb"))
 			return getRbChannel(set);
+		else if (qos.equals("custom_rb"))
+			return getCustomRbChannel(set);
 		else if (qos.equals("urb"))
 			return getURbChannel(set);
 		else if (qos.equals("iurb"))
@@ -348,6 +351,68 @@ public class SampleAppl {
 		return channel;
 	}
 
+	/**
+	 * Builds a new Appia Channel with Custom Reliable Broadcast
+	 * 
+	 * @param processes
+	 *            set of processes
+	 * @return a new uninitialized Channel
+	 */
+	private static Channel getCustomRbChannel(ProcessSet processes) {
+		/* Create layers and put them on a array */
+		
+		/*
+		Layer[] qos = { 
+						new TcpCompleteLayer(), 
+						new BasicBroadcastLayer(),
+						new TcpBasedPFDLayer(), 
+						new LazyRBLayer(),
+						new SampleApplLayer() 
+					};
+		*/
+
+		Layer[] qos = { 
+						new TcpCompleteLayer(), 
+						new BasicBroadcastLayer(),
+						new irdp.protocols.tutorialDA.lazyRB.custom.LazyRBLayer(),
+						new SampleApplLayer() 
+					};				
+		
+		/* Create a QoS */
+		QoS myQoS = null;
+		try {
+			myQoS = new QoS("Reliable Broadcast QoS", qos);
+		} catch (AppiaInvalidQoSException ex) {
+			System.err.println("Invalid QoS");
+			System.err.println(ex.getMessage());
+			System.exit(1);
+		}
+		/* Create a channel. Uses default event scheduler. */
+		Channel channel = myQoS.createUnboundChannel("Reliable Broadcast Channel");
+		
+		/*
+		 * Application Session requires special arguments: filename and . A
+		 * session is created and binded to the stack. Remaining ones are
+		 * created by default
+		 */
+		SampleApplSession sas = (SampleApplSession) qos[qos.length - 1]
+				.createSession();
+		sas.init(processes);
+		ChannelCursor cc = channel.getCursor();
+		/*
+		 * Application is the last session of the array. Positioning in it is
+		 * simple
+		 */
+		try {
+			cc.top();
+			cc.setSession(sas);
+		} catch (AppiaCursorException ex) {
+			System.err.println("Unexpected exception in main. Type code:" + ex.type);
+			System.exit(1);
+		}
+		return channel;
+	}
+	
 	/**
 	 * Builds a new Appia Channel with Uniform Reliable Broadcast
 	 * 
@@ -1359,7 +1424,9 @@ public class SampleAppl {
 						+ "\n\t annr - Read-Impose Write-Consult Atomic (N,N) Register"
 						+ "\n\t nbac - Consensus-based Non-Blocking Atomic Commit"
 						+ "\n\t cmem - Consensus-based Membership"
-						+ "\n\t trbvs - TRB-based View Synchrony");
+						+ "\n\t trbvs - TRB-based View Synchrony"
+						+ "\n\t custom_rb - Lazy Reliable Broadcast for Silent Crash-Stop");
 		System.exit(1);
 	}
+
 }
